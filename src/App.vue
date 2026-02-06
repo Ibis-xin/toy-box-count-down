@@ -41,10 +41,16 @@
           :remaining-text="holidayCountdown"
         />
 
-        <div class="resign-info" v-if="daysToResign > 0">
-          <span class="label">離職</span>
-          <span class="value">{{ daysToResign }}<small>天</small></span>
-        </div>
+        <ProgressBar
+          label="發薪"
+          :progress="paydayProgress"
+          :remaining-text="paydayCountdown"
+        />
+      </div>
+
+      <div class="resign-info" v-if="daysToResign > 0">
+        <span class="label">離職</span>
+        <span class="value">{{ daysToResign }}<small>天</small></span>
       </div>
     </div>
   </div>
@@ -52,17 +58,19 @@
 
 <script setup lang="ts">
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { useCountdown } from "./composables/useCountdown";
 import ProgressBar from "./components/ProgressBar.vue";
+import { useCountdown } from "./composables/useCountdown";
 
 const appWindow = getCurrentWindow();
 
 const {
   offWorkCountdown,
-  holidayCountdown,
-  daysToResign,
   offWorkProgress,
+  holidayCountdown,
   holidayProgress,
+  paydayCountdown,
+  paydayProgress,
+  daysToResign,
 } = useCountdown();
 
 const minimizeWindow = () => appWindow.minimize();
@@ -70,57 +78,43 @@ const closeWindow = () => appWindow.close();
 </script>
 
 <style>
-:root {
-  color-scheme: dark;
-}
-
-body {
-  margin: 0;
-  overflow: hidden;
-  background: transparent !important;
-}
-
 .drag-region {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 1;
+  z-index: 3;
   width: 100%;
-  height: 100%;
-  cursor: grab;
-}
-
-.drag-region:active {
-  cursor: grabbing;
+  height: 20%;
 }
 
 .content-card {
-  background: rgba(15, 23, 42, 0.85);
+  background: var(--bg-app);
   backdrop-filter: blur(16px) saturate(180%);
-  padding: 16px;
+  padding: var(--spacing-lg);
   padding-top: 10px;
   position: relative;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  z-index: 2;
+  box-shadow: var(--shadow-card);
 }
 
 .window-controls {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
   display: flex;
-  gap: 8px;
-  z-index: 12;
+  gap: var(--spacing-sm);
+  z-index: 4;
 }
 
 .control-btn {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--bg-glass);
   border: none;
   width: 20px;
   height: 20px;
-  border-radius: 6px;
-  color: #94a3b8;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -129,65 +123,92 @@ body {
 }
 
 .control-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
+  background: var(--bg-glass-hover);
+  color: var(--text-primary);
 }
 
 .control-btn.close:hover {
-  background: #ef4444;
+  background: var(--color-danger);
 }
 
 .header {
   display: flex;
   gap: 10px;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-xl);
   padding-right: 46px;
 }
 
 .header h1 {
-  font-family: "Outfit", sans-serif;
-  font-size: 1.1rem;
+  font-family: var(--font-family-title);
+  font-size: var(--font-size-xl);
   margin: 0;
-  background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+  background: linear-gradient(
+    135deg,
+    var(--text-primary) 0%,
+    var(--text-secondary) 100%
+  );
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
 }
 
 .status-dot {
   width: 6px;
   height: 6px;
-  background: #22c55e;
-  border-radius: 50%;
-  box-shadow: 0 0 8px #22c55e;
+  background: var(--color-success);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-dot);
 }
 
 .resign-info {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 12px;
-  margin-top: 4px;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-glass-light);
+  border-radius: var(--radius-lg);
+  margin-top: var(--spacing-xs);
+  overflow: hidden;
+  z-index: 4; /* 提高容器層級，使其高於拖曳層 (z-3) */
+}
+
+.resign-info::after {
+  content: "🙈 隱藏資訊";
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+  letter-spacing: 2px;
+}
+
+.resign-info:hover::after {
+  opacity: 0;
+  transform: scale(1.1);
+  pointer-events: none;
 }
 
 .resign-info .label {
-  font-size: 0.75rem;
-  opacity: 0.6;
+  font-size: var(--font-size-base);
+  opacity: var(--opacity-secondary);
 }
 
 .resign-info .value {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #f43f5e;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-danger-alt);
 }
 
 .resign-info .value small {
-  font-size: 0.6rem;
-  opacity: 0.5;
+  font-size: var(--font-size-xs);
+  opacity: var(--opacity-muted);
   margin-left: 1px;
 }
 </style>

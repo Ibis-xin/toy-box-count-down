@@ -2,9 +2,9 @@
   <div data-tauri-drag-region class="progress-bar-wrapper">
     <div data-tauri-drag-region class="progress-info">
       <span data-tauri-drag-region class="label">{{ label }}</span>
-      <span data-tauri-drag-region class="remaining-text">{{
-        remainingText
-      }}</span>
+      <span data-tauri-drag-region class="remaining-text">
+        {{ remainingText }}
+      </span>
     </div>
     <div data-tauri-drag-region class="progress-container">
       <div
@@ -32,13 +32,9 @@ defineProps<{
 <style scoped>
 .progress-bar-wrapper {
   width: 100%;
-  margin-bottom: 12px;
-  font-family:
-    "Inter",
-    system-ui,
-    -apple-system,
-    sans-serif;
-  color: #fff;
+  margin-bottom: var(--spacing-md);
+  font-family: inherit;
+  color: var(--text-primary);
   user-select: none;
 }
 
@@ -46,35 +42,39 @@ defineProps<{
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-bottom: 4px;
+  margin-bottom: var(--spacing-xs);
 }
 
 .label {
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.5px;
-  opacity: 0.9;
+  opacity: var(--opacity-active);
 }
 
 .remaining-text {
-  font-size: 0.75rem;
-  font-weight: 400;
-  opacity: 0.7;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  opacity: var(--opacity-glass);
 }
 
 .progress-container {
   height: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
+  background: var(--bg-glass);
+  border-radius: var(--radius-md);
   overflow: hidden;
   backdrop-filter: blur(4px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-glass);
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #6366f1, #a855f7);
-  border-radius: 10px;
+  background: linear-gradient(
+    90deg,
+    var(--primary-gradient-start),
+    var(--primary-gradient-end)
+  );
+  border-radius: var(--radius-md);
   transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
 }
@@ -104,10 +104,10 @@ defineProps<{
 }
 
 .progress-percentage {
-  margin-top: 4px;
+  margin-top: var(--spacing-xs);
   text-align: right;
-  font-size: 0.7rem;
-  font-weight: 500;
-  opacity: 0.5;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  opacity: var(--opacity-muted);
 }
 </style>

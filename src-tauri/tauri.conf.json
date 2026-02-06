@@ -13,13 +13,15 @@
     "windows": [
       {
         "title": "toy-box-count-down",
-        "width": 234,
-        "height": 227,
-        "resizable": false,
+        "minWidth": 235,
+        "maxWidth": 235,
+        "minHeight": 240,
+        "maxHeight": 290,
+        "resizable": true,
         "decorations": false,
         "alwaysOnTop": true,
         "transparent": true,
-        "fullscreen": false 
+        "fullscreen": false
       }
     ],
     "security": {
