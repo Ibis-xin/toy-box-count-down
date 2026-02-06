@@ -1,6 +1,6 @@
 <template>
   <Transition name="fade">
-    <div v-if="show" class="settings-overlay" @click.self="handleClose">
+    <div v-if="props.show" class="settings-overlay" @click.self="handleClose">
       <div class="settings-modal">
         <header class="settings-header">
           <div class="header-left">
@@ -157,7 +157,7 @@ const tabTitles = {
 };
 
 // 切換 tab 時調整動畫方向
-watch(activeTab, (newTab, oldTab) => {
+watch(activeTab, (newTab) => {
   if (newTab === "menu") {
     transitionName.value = "slide-left";
   } else {
@@ -207,12 +207,13 @@ const handleAddEvent = () => {
 }
 
 .settings-header {
-  padding: var(--spacing-lg);
+  padding: 0 var(--spacing-lg);
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid var(--border-glass);
-  height: 15px !important;
+  height: 54px;
+  flex-shrink: 0;
 }
 
 .header-left {
@@ -239,6 +240,11 @@ const handleAddEvent = () => {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.back-btn:hover {
+  background: var(--bg-glass-hover);
 }
 
 .close-btn {
@@ -249,6 +255,11 @@ const handleAddEvent = () => {
   cursor: pointer;
   padding: 0;
   line-height: 1;
+  transition: color var(--transition-fast);
+}
+
+.close-btn:hover {
+  color: var(--text-primary);
 }
 
 .settings-content {
@@ -256,6 +267,8 @@ const handleAddEvent = () => {
   overflow-y: auto;
   flex: 1;
   position: relative;
+  /* Add padding for custom scrollbar */
+  padding-right: 8px;
 }
 
 /* 主選單樣式 */
@@ -329,6 +342,10 @@ const handleAddEvent = () => {
   font-size: 0.85rem;
   color: var(--text-primary);
   opacity: 0.8;
+}
+
+.input-item-row input {
+  width: fit-content !important;
 }
 
 /* Switch UI */
@@ -426,7 +443,6 @@ input[type="text"] {
 
 .event-inputs {
   display: flex;
-  flex-direction: column;
   gap: 8px;
   margin-bottom: 12px;
 }

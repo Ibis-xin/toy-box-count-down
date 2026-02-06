@@ -33,11 +33,7 @@
         </button>
         <button class="control-btn close" @click="closeWindow">
           <svg width="10" height="10" viewBox="0 0 10 10">
-            <path
-              d="M1 1L9 9M9 1L1 9"
-              stroke="currentColor"
-              stroke-width="1.5"
-            />
+            <path d="M1 1L9 9M9 1L1 9" stroke="currentColor" stroke-width="1.5" />
           </svg>
         </button>
       </div>
@@ -112,55 +108,56 @@ const closeWindow = () => appWindow.close();
 </script>
 
 <style>
+/* Layout & Container */
+.widget-container {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header Section */
 .header {
   background: var(--bg-app);
   backdrop-filter: blur(16px) saturate(180%);
   display: flex;
-  gap: 10px;
   align-items: center;
   justify-content: space-between;
   padding: 10px 12px;
-  padding-bottom: 10px;
+  z-index: 4;
 }
 
 .header h1 {
   margin: 0;
   font-family: var(--font-family-title);
   font-size: var(--font-size-xl);
-  background: linear-gradient(
-    135deg,
-    var(--text-primary) 0%,
-    var(--text-secondary) 100%
-  );
+  font-weight: var(--font-weight-bold);
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-weight: var(--font-weight-bold);
 }
 
 .window-controls {
-  top: var(--spacing-md);
-  right: var(--spacing-md);
   display: flex;
   gap: var(--spacing-sm);
-  z-index: 4;
 }
 
-.control-btn {
+.control-btn,
+.settings-trigger {
   background: var(--bg-glass);
   border: none;
-  width: 20px;
-  height: 20px;
   border-radius: var(--radius-sm);
   color: var(--text-secondary);
+  width: 20px;
+  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast);
 }
 
-.control-btn:hover {
+.control-btn:hover,
+.settings-trigger:hover {
   background: var(--bg-glass-hover);
   color: var(--text-primary);
 }
@@ -169,41 +166,15 @@ const closeWindow = () => appWindow.close();
   background: var(--color-danger);
 }
 
-.settings-trigger {
-  background: var(--bg-glass);
-  border: none;
-  width: 20px;
-  height: 20px;
-  border-radius: var(--radius-sm);
-  color: var(--text-secondary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  padding: 0;
+.settings-trigger svg {
+  transition: transform var(--transition-fast);
 }
 
-.settings-trigger:hover {
-  background: var(--bg-glass-hover);
-}
-
-.settings-trigger svg:hover {
-  color: var(--text-primary);
+.settings-trigger:hover svg {
   transform: rotate(70deg);
 }
 
-.drag-region {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 3;
-  width: 100%;
-  height: 20%;
-}
-
+/* Stats & Events */
 .content-card {
   background: var(--bg-app);
   backdrop-filter: blur(16px) saturate(180%);
@@ -216,11 +187,16 @@ const closeWindow = () => appWindow.close();
   overflow: auto;
 }
 
+.stats-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
 .events-container {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-sm);
-  margin-top: var(--spacing-sm);
 }
 
 .resign-info {
@@ -239,13 +215,13 @@ const closeWindow = () => appWindow.close();
   position: absolute;
   inset: 0;
   backdrop-filter: blur(5px);
-  background: rgba(15, 23, 42, 0.8);
+  background: rgba(15, 23, 42, 0.82);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: var(--font-size-xs);
   color: var(--text-secondary);
-  transition: all 0.3s ease;
+  transition: all var(--transition-base);
   letter-spacing: 2px;
   z-index: 5;
 }

@@ -15,9 +15,7 @@
         <div data-tauri-drag-region class="progress-glow"></div>
       </div>
     </div>
-    <div data-tauri-drag-region class="progress-percentage">
-      {{ progress }}%
-    </div>
+    <div data-tauri-drag-region class="progress-percentage">{{ progress }}%</div>
   </div>
 </template>
 
@@ -85,12 +83,7 @@ defineProps<{
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.2),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
   animation: shine 2s infinite;
 }
 
