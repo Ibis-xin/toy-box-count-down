@@ -33,7 +33,11 @@
         </button>
         <button class="control-btn close" @click="closeWindow">
           <svg width="10" height="10" viewBox="0 0 10 10">
-            <path d="M1 1L9 9M9 1L1 9" stroke="currentColor" stroke-width="1.5" />
+            <path
+              d="M1 1L9 9M9 1L1 9"
+              stroke="currentColor"
+              stroke-width="1.5"
+            />
           </svg>
         </button>
       </div>
@@ -83,7 +87,8 @@
 
 <script setup lang="ts">
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
+import { enable, isEnabled } from "@tauri-apps/plugin-autostart";
 import ProgressBar from "./components/ProgressBar.vue";
 import SettingsModal from "./components/SettingsModal.vue";
 import { useCountdown } from "./composables/useCountdown";
@@ -92,6 +97,18 @@ import { useSettings } from "./composables/useSettings";
 const appWindow = getCurrentWindow();
 const isSettingsOpen = ref(false);
 const { settings } = useSettings();
+
+onMounted(async () => {
+  // 自動開啟開機自啟
+  try {
+    const isAutoStartEnabled = await isEnabled();
+    if (!isAutoStartEnabled) {
+      await enable();
+    }
+  } catch (err) {
+    console.error("Failed to enable autostart:", err);
+  }
+});
 
 const {
   offWorkCountdown,
@@ -130,7 +147,11 @@ const closeWindow = () => appWindow.close();
   font-family: var(--font-family-title);
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
-  background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--text-primary) 0%,
+    var(--text-secondary) 100%
+  );
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
