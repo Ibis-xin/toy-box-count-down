@@ -2,7 +2,7 @@
   <Transition name="fade">
     <div v-if="props.show" class="settings-overlay" @click.self="handleClose">
       <div class="settings-modal">
-        <header class="settings-header">
+        <header data-tauri-drag-region class="settings-header">
           <div class="header-left">
             <button
               v-if="activeTab !== 'menu'"
@@ -25,45 +25,32 @@
           <button class="close-btn" @click="handleClose">&times;</button>
         </header>
 
-        <main class="settings-content">
+        <main data-tauri-drag-region class="settings-content">
           <Transition :name="transitionName" mode="out-in">
-            <!-- 主選單 -->
-            <div v-if="activeTab === 'menu'" class="menu-list">
-              <button class="menu-item" @click="activeTab = 'display'">
-                <span class="menu-icon">👁️</span>
-                <span class="menu-label">顯示項目</span>
-                <span class="menu-arrow">›</span>
-              </button>
-              <button class="menu-item" @click="activeTab = 'time'">
-                <span class="menu-icon">📅</span>
-                <span class="menu-label">時間與日期設定</span>
-                <span class="menu-arrow">›</span>
-              </button>
-              <button class="menu-item" @click="activeTab = 'events'">
-                <span class="menu-icon">🎉</span>
-                <span class="menu-label">特殊日期倒數</span>
-                <span class="menu-arrow">›</span>
-              </button>
-            </div>
+            <MenuList
+              v-if="activeTab === 'menu'"
+              :items="menuItems"
+              v-model="activeTab"
+            ></MenuList>
 
             <!-- 顯示項目設定 -->
             <div v-else-if="activeTab === 'display'" class="submenu-content">
-              <div class="switch-group">
-                <div class="switch-item">
+              <div data-tauri-drag-region class="switch-group">
+                <div data-tauri-drag-region class="switch-item">
                   <label>下班倒數</label>
                   <label class="switch">
                     <input type="checkbox" v-model="settings.showOffWork" />
                     <span class="slider"></span>
                   </label>
                 </div>
-                <div class="switch-item">
+                <div data-tauri-drag-region class="switch-item">
                   <label>週末倒數</label>
                   <label class="switch">
                     <input type="checkbox" v-model="settings.showHoliday" />
                     <span class="slider"></span>
                   </label>
                 </div>
-                <div class="switch-item">
+                <div data-tauri-drag-region class="switch-item">
                   <label>發薪倒數</label>
                   <label class="switch">
                     <input type="checkbox" v-model="settings.showPayday" />
@@ -75,16 +62,16 @@
 
             <!-- 時間與日期設定 -->
             <div v-else-if="activeTab === 'time'" class="submenu-content">
-              <div class="input-stack">
-                <div class="input-item-row">
+              <div data-tauri-drag-region class="input-stack">
+                <div data-tauri-drag-region class="input-item-row">
                   <label>上班時間</label>
                   <input type="time" v-model="settings.workStartTime" />
                 </div>
-                <div class="input-item-row">
+                <div data-tauri-drag-region class="input-item-row">
                   <label>下班時間</label>
                   <input type="time" v-model="settings.workEndTime" />
                 </div>
-                <div class="input-item-row">
+                <div data-tauri-drag-region class="input-item-row">
                   <label>發薪日期</label>
                   <input
                     type="number"
@@ -98,17 +85,22 @@
 
             <!-- 特殊事件設定 -->
             <div v-else-if="activeTab === 'events'" class="submenu-content">
-              <div class="section-header">
+              <div data-tauri-drag-region class="section-header">
                 <span class="info-text">管理您的特殊紀念日期</span>
                 <button class="add-btn" @click="handleAddEvent">+ 新增</button>
               </div>
-              <div class="events-list">
-                <div v-for="event in settings.events" :key="event.id" class="event-item">
-                  <div class="event-inputs">
+              <div data-tauri-drag-region class="events-list">
+                <div
+                  data-tauri-drag-region
+                  v-for="event in settings.events"
+                  :key="event.id"
+                  class="event-item"
+                >
+                  <div data-tauri-drag-region class="event-inputs">
                     <input type="text" v-model="event.name" placeholder="事件名稱" />
                     <input type="date" v-model="event.date" />
                   </div>
-                  <div class="event-actions">
+                  <div data-tauri-drag-region class="event-actions">
                     <button
                       class="privacy-toggle"
                       :class="{ active: event.isHidden }"
@@ -122,7 +114,11 @@
                   </div>
                 </div>
               </div>
-              <div v-if="settings.events.length === 0" class="empty-state">
+              <div
+                data-tauri-drag-region
+                v-if="settings.events.length === 0"
+                class="empty-state"
+              >
                 暫無特殊事件
               </div>
             </div>
@@ -136,6 +132,7 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { useSettings } from "../composables/useSettings";
+import MenuList from "./MenuList.vue";
 
 const props = defineProps<{
   show: boolean;
@@ -155,6 +152,12 @@ const tabTitles = {
   time: "時間與日期",
   events: "特殊事件",
 };
+
+const menuItems = [
+  { label: "顯示項目", value: "display", icon: "👁️" },
+  { label: "時間與日期", value: "time", icon: "📅" },
+  { label: "特殊事件", value: "events", icon: "🎉" },
+];
 
 // 切換 tab 時調整動畫方向
 watch(activeTab, (newTab) => {
@@ -269,49 +272,6 @@ const handleAddEvent = () => {
   position: relative;
   /* Add padding for custom scrollbar */
   padding-right: 8px;
-}
-
-/* 主選單樣式 */
-.menu-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.menu-item {
-  background: var(--bg-glass-light);
-  border: 1px solid var(--border-glass);
-  border-radius: var(--radius-md);
-  padding: 12px 16px;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  transition: all 0.2s;
-  width: 100%;
-  text-align: left;
-}
-
-.menu-item:hover {
-  background: var(--bg-glass-hover);
-  transform: translateX(4px);
-}
-
-.menu-icon {
-  font-size: 1.2rem;
-  margin-right: 12px;
-}
-
-.menu-label {
-  flex: 1;
-  color: var(--text-primary);
-  font-size: 0.9rem;
-  font-weight: var(--font-weight-medium);
-}
-
-.menu-arrow {
-  color: var(--text-secondary);
-  font-size: 1.2rem;
-  opacity: 0.5;
 }
 
 /* 子選單共用 */

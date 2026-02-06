@@ -1,7 +1,7 @@
 <template>
   <div data-tauri-drag-region class="widget-container">
-    <header class="header">
-      <h1>快樂倒數</h1>
+    <header data-tauri-drag-region class="header">
+      <h1 data-tauri-drag-region>快樂倒數</h1>
 
       <div class="window-controls">
         <button class="settings-trigger" @click="isSettingsOpen = true">
@@ -33,18 +33,14 @@
         </button>
         <button class="control-btn close" @click="closeWindow">
           <svg width="10" height="10" viewBox="0 0 10 10">
-            <path
-              d="M1 1L9 9M9 1L1 9"
-              stroke="currentColor"
-              stroke-width="1.5"
-            />
+            <path d="M1 1L9 9M9 1L1 9" stroke="currentColor" stroke-width="1.5" />
           </svg>
         </button>
       </div>
     </header>
 
-    <div class="content-card">
-      <div class="stats-grid">
+    <div data-tauri-drag-region class="content-card">
+      <div data-tauri-drag-region class="stats-grid">
         <ProgressBar
           v-if="settings.showOffWork"
           label="下班"
@@ -67,16 +63,19 @@
         />
       </div>
 
-      <div class="events-container">
+      <div data-tauri-drag-region class="events-container">
         <div
           v-for="event in eventCountdowns"
           :key="event.id"
+          data-tauri-drag-region
           class="resign-info"
           :class="{ 'is-hidden': event.isHidden }"
         >
-          <span class="label">{{ event.name }}</span>
-          <span class="value">{{ event.displayText }}</span>
-          <div v-if="event.isHidden" class="mask-overlay">🙈 隱藏資訊</div>
+          <span data-tauri-drag-region class="label">{{ event.name }}</span>
+          <span data-tauri-drag-region class="value">{{ event.displayText }}</span>
+          <div v-if="event.isHidden" data-tauri-drag-region class="mask-overlay">
+            🙈 隱藏資訊
+          </div>
         </div>
       </div>
     </div>
@@ -87,8 +86,8 @@
 
 <script setup lang="ts">
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { onMounted, ref } from "vue";
 import { enable, isEnabled } from "@tauri-apps/plugin-autostart";
+import { onMounted, ref } from "vue";
 import ProgressBar from "./components/ProgressBar.vue";
 import SettingsModal from "./components/SettingsModal.vue";
 import { useCountdown } from "./composables/useCountdown";
@@ -129,6 +128,8 @@ const closeWindow = () => appWindow.close();
 .widget-container {
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
 }
 
 /* Header Section */
@@ -147,11 +148,7 @@ const closeWindow = () => appWindow.close();
   font-family: var(--font-family-title);
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
-  background: linear-gradient(
-    135deg,
-    var(--text-primary) 0%,
-    var(--text-secondary) 100%
-  );
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -204,8 +201,11 @@ const closeWindow = () => appWindow.close();
   position: relative;
   z-index: 2;
   box-shadow: var(--shadow-card);
-  height: 100vh;
-  overflow: auto;
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
 }
 
 .stats-grid {
@@ -218,6 +218,7 @@ const closeWindow = () => appWindow.close();
   display: flex;
   flex-direction: column;
   gap: var(--spacing-sm);
+  padding-bottom: var(--spacing-sm);
 }
 
 .resign-info {
@@ -229,7 +230,6 @@ const closeWindow = () => appWindow.close();
   background: var(--bg-glass-light);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  z-index: 4;
 }
 
 .mask-overlay {
@@ -244,7 +244,6 @@ const closeWindow = () => appWindow.close();
   color: var(--text-secondary);
   transition: all var(--transition-base);
   letter-spacing: 2px;
-  z-index: 5;
 }
 
 .resign-info.is-hidden:hover .mask-overlay {
