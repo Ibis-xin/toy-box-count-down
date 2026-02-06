@@ -19,22 +19,13 @@
             />
           </svg>
         </button>
-        <button class="control-btn minimize" @click="minimizeWindow">
+        <button class="control-btn minimize" @click="closeWindow">
           <svg width="10" height="1" viewBox="0 0 10 1">
             <line
               x1="0"
               y1="0.5"
               x2="10"
               y2="0.5"
-              stroke="currentColor"
-              stroke-width="1.5"
-            />
-          </svg>
-        </button>
-        <button class="control-btn close" @click="closeWindow">
-          <svg width="10" height="10" viewBox="0 0 10 10">
-            <path
-              d="M1 1L9 9M9 1L1 9"
               stroke="currentColor"
               stroke-width="1.5"
             />
@@ -76,14 +67,8 @@
           :class="{ 'is-hidden': event.isHidden }"
         >
           <span data-tauri-drag-region class="label">{{ event.name }}</span>
-          <span data-tauri-drag-region class="value">{{
-            event.displayText
-          }}</span>
-          <div
-            v-if="event.isHidden"
-            data-tauri-drag-region
-            class="mask-overlay"
-          >
+          <span data-tauri-drag-region class="value">{{ event.displayText }}</span>
+          <div v-if="event.isHidden" data-tauri-drag-region class="mask-overlay">
             🙈 隱藏資訊
           </div>
         </div>
@@ -142,10 +127,9 @@ watch(
       invoke("update_tray_tooltip", { tooltip: "快樂倒數" });
     }
   },
-  { immediate: true },
+  { immediate: true }
 );
 
-const minimizeWindow = () => appWindow.minimize();
 const closeWindow = () => appWindow.close();
 </script>
 
@@ -174,11 +158,7 @@ const closeWindow = () => appWindow.close();
   font-family: var(--font-family-title);
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
-  background: linear-gradient(
-    135deg,
-    var(--text-primary) 0%,
-    var(--text-secondary) 100%
-  );
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
