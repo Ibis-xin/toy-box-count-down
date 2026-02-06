@@ -4,6 +4,13 @@ use tauri::{
     Manager, WindowEvent,
 };
 
+#[tauri::command]
+fn update_tray_tooltip(app: tauri::AppHandle, tooltip: String) {
+    if let Some(tray) = app.tray_by_id("main-tray") {
+        let _ = tray.set_tooltip(Some(tooltip));
+    }
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -12,6 +19,7 @@ pub fn run() {
             tauri_plugin_autostart::MacosLauncher::LaunchAgent,
             Some(vec!["--silent"]),
         ))
+        .invoke_handler(tauri::generate_handler![update_tray_tooltip])
         .setup(|app| {
             // 如果帶有 --silent 參數（通常是開機自啟），則不顯示視窗
             if std::env::args().any(|arg| arg == "--silent") {
@@ -25,9 +33,10 @@ pub fn run() {
             let menu = Menu::with_items(app, &[&show_i, &quit_i])?;
 
             // 建立系統匣圖示
-            let _tray = TrayIconBuilder::new()
+            let _tray = TrayIconBuilder::with_id("main-tray")
                 .icon(app.default_window_icon().unwrap().clone())
                 .menu(&menu)
+                .tooltip("快樂倒數")
                 .show_menu_on_left_click(false)
                 .on_menu_event(|app, event| match event.id.as_ref() {
                     "show" => {

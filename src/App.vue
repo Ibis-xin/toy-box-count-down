@@ -33,7 +33,11 @@
         </button>
         <button class="control-btn close" @click="closeWindow">
           <svg width="10" height="10" viewBox="0 0 10 10">
-            <path d="M1 1L9 9M9 1L1 9" stroke="currentColor" stroke-width="1.5" />
+            <path
+              d="M1 1L9 9M9 1L1 9"
+              stroke="currentColor"
+              stroke-width="1.5"
+            />
           </svg>
         </button>
       </div>
@@ -72,8 +76,14 @@
           :class="{ 'is-hidden': event.isHidden }"
         >
           <span data-tauri-drag-region class="label">{{ event.name }}</span>
-          <span data-tauri-drag-region class="value">{{ event.displayText }}</span>
-          <div v-if="event.isHidden" data-tauri-drag-region class="mask-overlay">
+          <span data-tauri-drag-region class="value">{{
+            event.displayText
+          }}</span>
+          <div
+            v-if="event.isHidden"
+            data-tauri-drag-region
+            class="mask-overlay"
+          >
             🙈 隱藏資訊
           </div>
         </div>
@@ -85,9 +95,10 @@
 </template>
 
 <script setup lang="ts">
+import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { enable, isEnabled } from "@tauri-apps/plugin-autostart";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import ProgressBar from "./components/ProgressBar.vue";
 import SettingsModal from "./components/SettingsModal.vue";
 import { useCountdown } from "./composables/useCountdown";
@@ -96,6 +107,16 @@ import { useSettings } from "./composables/useSettings";
 const appWindow = getCurrentWindow();
 const isSettingsOpen = ref(false);
 const { settings } = useSettings();
+
+const {
+  offWorkCountdown,
+  offWorkProgress,
+  holidayCountdown,
+  holidayProgress,
+  paydayCountdown,
+  paydayProgress,
+  eventCountdowns,
+} = useCountdown();
 
 onMounted(async () => {
   // 自動開啟開機自啟
@@ -109,15 +130,20 @@ onMounted(async () => {
   }
 });
 
-const {
-  offWorkCountdown,
-  offWorkProgress,
-  holidayCountdown,
-  holidayProgress,
-  paydayCountdown,
-  paydayProgress,
-  eventCountdowns,
-} = useCountdown();
+// 更新系統匣預覽資訊 (Tooltip)
+watch(
+  () => offWorkCountdown.value,
+  (newValue) => {
+    if (newValue && settings.showOffWork) {
+      invoke("update_tray_tooltip", {
+        tooltip: `快樂倒數 - 離下班還剩: ${newValue}`,
+      });
+    } else {
+      invoke("update_tray_tooltip", { tooltip: "快樂倒數" });
+    }
+  },
+  { immediate: true },
+);
 
 const minimizeWindow = () => appWindow.minimize();
 const closeWindow = () => appWindow.close();
@@ -148,7 +174,11 @@ const closeWindow = () => appWindow.close();
   font-family: var(--font-family-title);
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
-  background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--text-primary) 0%,
+    var(--text-secondary) 100%
+  );
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
