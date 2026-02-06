@@ -13,10 +13,6 @@
     "windows": [
       {
         "title": "toy-box-count-down",
-        "minWidth": 235,
-        "maxWidth": 235,
-        "minHeight": 240,
-        "maxHeight": 290,
         "resizable": true,
         "decorations": false,
         "alwaysOnTop": true,
